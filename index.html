@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SoloIA</title>
+  <link rel="icon" type="image/png" href="assets/icon.png" />
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <script>window.__soloiaLoadStart = Date.now();</script>
+  <!-- Écran de chargement : visible dès le premier rendu (avant tout script),
+       masqué par app.js une fois l'appli prête (base indexée, session résolue). -->
+  <div class="app-loading" id="appLoading">
+    <div class="app-loading-inner">
+      <img class="app-loading-logo" src="assets/icon.png" alt="">
+      <div class="app-loading-spinner"></div>
+      <div class="app-loading-text">SoloIA se prépare…</div>
+    </div>
+  </div>
+
+  <!-- Jeu d'icônes (SVG sprite) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+      <symbol id="ic-sidebar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="9" y1="4" x2="9" y2="20"/></symbol>
+      <symbol id="ic-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+      <symbol id="ic-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 0 1-.9-3.8A8.4 8.4 0 0 1 12.5 3 8.5 8.5 0 0 1 21 11.5z"/></symbol>
+      <symbol id="ic-folder" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></symbol>
+      <symbol id="ic-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></symbol>
+      <symbol id="ic-code" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+      <symbol id="ic-play" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></symbol>
+      <symbol id="ic-terminal" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></symbol>
+      <symbol id="ic-sliders" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></symbol>
+      <symbol id="ic-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+      <symbol id="ic-swap" viewBox="0 0 24 24"><polyline points="7 15 12 20 17 15"/><polyline points="7 9 12 4 17 9"/></symbol>
+      <symbol id="ic-send" viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></symbol>
+      <symbol id="ic-mic" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></symbol>
+      <symbol id="ic-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9.5a3 3 0 0 0-3-1.5c-1.5 0-2.5 1-2.5 2s1 1.5 2.5 1.9 2.5 1 2.5 2-1 2-2.5 2a3 3 0 0 1-3-1.5"/></symbol>
+      <symbol id="ic-paperclip" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a5 5 0 0 1-7.07-7.07l9.19-9.19a3.5 3.5 0 0 1 4.95 4.95l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></symbol>
+      <symbol id="ic-sparkle" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l1.4 6L19 9.4 13.4 11 12 17l-1.4-6L5 9.4 10.6 8z"/><path d="M19 14l.7 2.6L22 17.3l-2.3.7L19 21l-.7-2.6L16 17.3l2.3-.7z"/></symbol>
+      <symbol id="ic-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></symbol>
+      <symbol id="ic-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+      <symbol id="ic-coffee" viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></symbol>
+      <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+      <symbol id="ic-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+      <symbol id="ic-speaker" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></symbol>
+      <symbol id="ic-stop" viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+      <symbol id="ic-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+      <symbol id="ic-archive" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4"/><path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></symbol>
+      <symbol id="ic-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+      <symbol id="ic-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L8.1 9.8a16 16 0 0 0 6 6l1.3-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6a2 2 0 0 1 1.7 2z"/></symbol>
+      <symbol id="ic-google" viewBox="0 0 24 24"><path fill="#4285F4" d="M21.6 12.2c0-.6-.1-1.3-.2-1.9H12v3.6h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.2z"/><path fill="#34A853" d="M12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 .9-3.4.9-2.6 0-4.8-1.7-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z"/><path fill="#FBBC05" d="M6.4 14a6 6 0 0 1 0-3.8V7.5H3.1a10 10 0 0 0 0 9z"/><path fill="#EA4335" d="M12 6.1c1.5 0 2.8.5 3.8 1.5l2.8-2.8A10 10 0 0 0 3.1 7.5l3.3 2.6C7.2 7.8 9.4 6.1 12 6.1z"/></symbol>
+      <symbol id="ic-apple" viewBox="0 0 24 24"><path d="M16.4 12.6c0-2.2 1.8-3.3 1.9-3.3-1-1.5-2.6-1.7-3.2-1.7-1.4-.1-2.6.8-3.3.8s-1.7-.8-2.8-.8c-1.5 0-2.8.8-3.6 2.2-1.5 2.7-.4 6.6 1.1 8.8.7 1 1.6 2.2 2.7 2.2 1.1 0 1.5-.7 2.8-.7s1.7.7 2.8.7 1.9-1 2.6-2a9 9 0 0 0 1.2-2.4c-.1 0-2.3-.9-2.3-3.5zM14.3 6.3c.6-.7 1-1.7.9-2.7-.9 0-1.9.6-2.5 1.3-.5.6-1 1.6-.9 2.6 1 .1 2-.5 2.5-1.2z"/></symbol>
+      <symbol id="ic-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.31.35.6.6.83a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+      <symbol id="ic-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></symbol>
+      <symbol id="ic-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2-3 4"/><line x1="12" y1="17.5" x2="12" y2="17.5"/></symbol>
+      <symbol id="ic-power" viewBox="0 0 24 24"><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/><line x1="12" y1="2" x2="12" y2="12"/></symbol>
+      <symbol id="ic-chevron-down" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+      <symbol id="ic-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="8.01"/></symbol>
+      <symbol id="ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></symbol>
+      <symbol id="ic-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></symbol>
+      <symbol id="ic-monitor" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></symbol>
+      <symbol id="ic-camera" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></symbol>
+      <symbol id="ic-shield" viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6z"/></symbol>
+      <symbol id="ic-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></symbol>
+      <symbol id="ic-puzzle" viewBox="0 0 24 24"><path d="M10 3h2a2 2 0 0 1 2 2v1.5a1.5 1.5 0 0 0 3 0V6a2 2 0 0 1 2 2v2h-1.5a1.5 1.5 0 0 0 0 3H19v2a2 2 0 0 1-2 2h-2a1.5 1.5 0 0 0-3 0h-2a2 2 0 0 1-2-2v-2a1.5 1.5 0 0 0 0-3H6V8a2 2 0 0 1 2-2h1.5a1.5 1.5 0 0 0 0-3z"/></symbol>
+      <symbol id="ic-plug" viewBox="0 0 24 24"><path d="M9 2v5"/><path d="M15 2v5"/><path d="M6 9h12l-1 5a5 5 0 0 1-5 4h0a5 5 0 0 1-5-4z"/><path d="M12 18v4"/></symbol>
+    </defs>
+  </svg>
+
+  <div class="app" id="app">
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar" id="sidebar">
+      <div class="side-top">
+        <div class="brand"><img class="brand-img" src="assets/icon.png" alt="SoloIA" /> <span>SoloIA</span></div>
+        <div class="side-actions">
+          <button class="icon-btn" id="btnSearch" title="Rechercher"><svg class="ic"><use href="#ic-search"/></svg></button>
+          <button class="icon-btn" id="btnCollapse" title="Réduire"><svg class="ic"><use href="#ic-sidebar"/></svg></button>
+        </div>
+      </div>
+
+      <button class="new-chat" data-view="home" id="newChat">
+        <svg class="ic"><use href="#ic-plus"/></svg> <span class="label">Nouvelle conversation</span>
+      </button>
+
+      <nav class="side-nav">
+        <button class="side-item" data-view="discussions"><svg class="ic"><use href="#ic-chat"/></svg> <span class="label">Discussions</span></button>
+        <button class="side-item" data-view="projets"><svg class="ic"><use href="#ic-folder"/></svg> <span class="label">Projets</span></button>
+        <button class="side-item" data-view="artefacts"><svg class="ic"><use href="#ic-grid"/></svg> <span class="label">Artéfacts</span></button>
+        <button class="side-item" data-view="code">
+          <svg class="ic"><use href="#ic-code"/></svg> <span class="label">Code</span> <span class="upsell" data-upgrade>Mettre à niveau</span>
+        </button>
+        <button class="side-item" data-view="skill"><svg class="ic"><use href="#ic-puzzle"/></svg> <span class="label">Skills</span></button>
+        <button class="side-item" data-view="settings"><svg class="ic"><use href="#ic-gear"/></svg> <span class="label">Paramètres</span></button>
+      </nav>
+
+      <div class="side-recent">
+        <div class="recent-head">Récents <svg class="ic sm"><use href="#ic-sliders"/></svg></div>
+        <div id="recentList" class="recent-list"></div>
+      </div>
+
+      <div class="side-account" id="accountChip">
+        <div class="acc-avatar" id="accAvatar">IN</div>
+        <div class="acc-info">
+          <div class="acc-name" id="accName">Invité</div>
+          <div class="acc-plan" id="accPlan">Forfait Free</div>
+        </div>
+        <button class="icon-btn" id="btnAccount" title="Compte"><svg class="ic"><use href="#ic-swap"/></svg></button>
+
+        <!-- Menu déroulant du compte (ouvert au clic sur le bloc compte). -->
+        <div class="acc-dropdown hidden" id="accDropdown">
+          <div class="acc-dd-email" id="ddEmail">invité</div>
+          <button class="acc-dd-item" id="ddSettings"><svg class="ic"><use href="#ic-gear"/></svg> Paramètres</button>
+          <button class="acc-dd-item" id="ddLanguage"><svg class="ic"><use href="#ic-globe"/></svg> Langue</button>
+          <button class="acc-dd-item" id="ddHelp"><svg class="ic"><use href="#ic-help"/></svg> Obtenir de l'aide</button>
+          <button class="acc-dd-item" id="ddUpgrade"><svg class="ic"><use href="#ic-sparkle"/></svg> Mettre à niveau l'abonnement</button>
+          <button class="acc-dd-item" id="ddChangelog"><svg class="ic"><use href="#ic-info"/></svg> En savoir plus sur SoloIA</button>
+          <div class="acc-dd-sep"></div>
+          <button class="acc-dd-item" id="ddLogout"><svg class="ic"><use href="#ic-power"/></svg> Se déconnecter</button>
+          <div class="acc-dd-footer">
+            <div class="acc-dd-name" id="ddName">Invité</div>
+            <div class="acc-dd-plan" id="ddPlan">Forfait Free</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ================= MAIN ================= -->
+    <main class="main">
+      <header class="topbar">
+        <div class="plan-pill">
+          <span id="planLabel">Forfait Free</span>
+          <span class="dot">·</span>
+          <a href="#" data-upgrade class="upgrade-link">Mettre à niveau</a>
+        </div>
+        <span class="credits-badge" id="creditsBadge" title="Crédits restants ce mois-ci">— crédits</span>
+        <button class="ghost-avatar" id="btnAccount2" title="Compte"><svg class="ic"><use href="#ic-user"/></svg></button>
+      </header>
+
+      <!-- Vue accueil -->
+      <section class="view view-landing" id="viewLanding">
+        <div class="hero">
+          <h1 class="greeting"><svg class="ic star"><use href="#ic-sparkle"/></svg> <span id="greetText">Bonsoir</span></h1>
+          <div class="composer-card">
+            <textarea id="input" rows="1" placeholder="Comment puis-je vous aider ?"></textarea>
+            <div class="attachments" id="attachments"></div>
+            <div class="composer-bar">
+              <button class="round" id="btnPlus" title="Importer un fichier"><svg class="ic"><use href="#ic-plus"/></svg></button>
+              <div class="spacer"></div>
+              <div class="model-select">
+                <select id="modelDropdown">
+                  <option value="rapide">Solo - Rapide</option>
+                  <option value="moyen">Solo - Moyen</option>
+                  <option value="max">Solo - Max</option>
+                </select>
+              </div>
+              <button class="round" id="btnMic" title="Dictée (à venir)"><svg class="ic"><use href="#ic-mic"/></svg></button>
+              <button class="round primary-round" id="btnSend" title="Envoyer"><svg class="ic"><use href="#ic-send"/></svg></button>
+            </div>
+          </div>
+          <div class="chips">
+            <button class="chip" data-chip="ecrire"><svg class="ic"><use href="#ic-edit"/></svg> Écrire</button>
+            <button class="chip" data-chip="apprendre"><svg class="ic"><use href="#ic-book"/></svg> Apprendre</button>
+            <button class="chip" data-view="code"><svg class="ic"><use href="#ic-code"/></svg> Code</button>
+            <button class="chip" data-chip="vie"><svg class="ic"><use href="#ic-coffee"/></svg> Vie quotidienne</button>
+            <button class="chip" data-chip="choix"><svg class="ic"><use href="#ic-sparkle"/></svg> Choix de SoloIA</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Vue conversation -->
+      <section class="view view-chat hidden" id="viewChat">
+        <div class="chat-title" id="chatTitle">Home</div>
+        <div class="messages" id="messages"></div>
+        <div class="composer-card sticky">
+          <textarea id="input2" rows="1" placeholder="Réponds à SoloIA…"></textarea>
+          <div class="attachments" id="attachments2"></div>
+          <div class="composer-bar">
+            <button class="round" id="btnPlus2" title="Importer un fichier"><svg class="ic"><use href="#ic-plus"/></svg></button>
+            <div class="spacer"></div>
+            <span class="tokens" id="creditsBadge2" title="Crédits restants ce mois-ci"><svg class="ic sm"><use href="#ic-coin"/></svg> —</span>
+            <button class="round primary-round" id="btnSend2" title="Envoyer"><svg class="ic"><use href="#ic-send"/></svg></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Vues secondaires -->
+      <section class="view view-panel hidden" id="viewPanel">
+        <div class="panel-inner" id="panelInner"></div>
+      </section>
+    </main>
+  </div>
+
+  <input type="file" id="fileInput" multiple style="display:none"
+    accept=".txt,.md,.py,.js,.ts,.json,.html,.css,.csv,.java,.c,.cpp,.h,.go,.rs,.php,.sql,.sh,.lua,.kt,.swift,.xml,.yml,.yaml,image/*" />
+  <input type="file" id="avatarInput" accept="image/*" style="display:none" />
+  <input type="file" id="skillFileInput" accept=".skill" style="display:none" />
+
+  <!-- ================= MODALES ================= -->
+  <div class="modal-backdrop hidden" id="authModal">
+    <div class="modal">
+      <button class="modal-x" data-close><svg class="ic"><use href="#ic-x"/></svg></button>
+      <h2 id="authTitle">Se connecter</h2>
+      <p class="modal-sub">Comptes gérés par Firebase (repli invité hors-ligne).</p>
+
+      <!-- Email / mot de passe -->
+      <div id="emailForm">
+        <input type="email" id="authEmail" placeholder="Email" autocomplete="email" />
+        <input type="password" id="authPass" placeholder="Mot de passe" autocomplete="current-password" />
+        <div class="modal-err" id="authErr"></div>
+        <button class="primary" id="authSubmit">Se connecter</button>
+        <div class="modal-switch"><a href="#" id="authSwitch">Pas de compte ? Créer un compte</a></div>
+      </div>
+
+      <!-- Téléphone (SMS) -->
+      <div id="phoneForm" class="hidden">
+        <input type="tel" id="authPhone" placeholder="+33 6 12 34 56 78" autocomplete="tel" />
+        <button class="primary" id="phoneSend">Envoyer le code par SMS</button>
+        <div id="codeStep" class="hidden">
+          <input type="text" id="authCode" inputmode="numeric" placeholder="Code reçu (6 chiffres)" />
+          <button class="primary" id="phoneConfirm">Valider le code</button>
+        </div>
+        <div class="modal-err" id="phoneErr"></div>
+        <div class="modal-switch"><a href="#" id="phoneBack">← Autres méthodes</a></div>
+      </div>
+
+      <div class="modal-sep"><span>ou</span></div>
+      <div class="providers">
+        <button class="prov" id="provGoogle"><svg class="ic ic-multi"><use href="#ic-google"/></svg> Google</button>
+        <button class="prov" id="provApple"><svg class="ic ic-multi"><use href="#ic-apple"/></svg> Apple</button>
+        <button class="prov" id="provPhone"><svg class="ic"><use href="#ic-phone"/></svg> Téléphone</button>
+        <button class="prov" id="provGuest"><svg class="ic"><use href="#ic-user"/></svg> Invité</button>
+      </div>
+      <div id="recaptcha-container"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="upgradeModal">
+    <div class="modal wide">
+      <button class="modal-x" data-close><svg class="ic"><use href="#ic-x"/></svg></button>
+      <h2>Passer à SoloIA Pro / Max</h2>
+      <p class="modal-sub">Débloque les modèles avancés, le vocal, la création
+        d'image et les projets illimités.</p>
+      <div class="plans">
+        <div class="plan-card" data-plan="pro">
+          <div class="plan-name">Pro</div>
+          <div class="plan-price">19,99 € <span>/mois</span></div>
+          <ul><li>Modèle Moyen</li><li>Projets étendus</li><li>Historique</li></ul>
+          <button class="primary buy" data-plan="pro">Choisir Pro</button>
+        </div>
+        <div class="plan-card featured" data-plan="max">
+          <div class="plan-badge">Le plus complet</div>
+          <div class="plan-name">Max</div>
+          <div class="plan-price">79,99 € <span>/mois</span></div>
+          <ul><li>Modèle IA avancé</li><li>Vocal + image</li><li>Tout illimité</li></ul>
+          <button class="primary buy" data-plan="max">Choisir Max</button>
+        </div>
+      </div>
+      <div id="paypalArea" class="paypal-area"></div>
+      <div class="modal-note" id="payNote"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="settingsModal">
+    <div class="modal settings-modal">
+      <button class="modal-x" data-close><svg class="ic"><use href="#ic-x"/></svg></button>
+      <div class="settings-layout">
+        <nav class="settings-nav">
+          <div class="settings-search-row">
+            <svg class="ic sm"><use href="#ic-search"/></svg>
+            <input type="text" id="settingsSearch" placeholder="Rechercher" autocomplete="off">
+          </div>
+          <div class="settings-nav-group">Paramètres</div>
+          <button class="settings-nav-item" data-settings="general"><svg class="ic sm"><use href="#ic-gear"/></svg> Général</button>
+          <button class="settings-nav-item" data-settings="account"><svg class="ic sm"><use href="#ic-user"/></svg> Compte</button>
+          <button class="settings-nav-item" data-settings="privacy"><svg class="ic sm"><use href="#ic-shield"/></svg> Confidentialité</button>
+          <button class="settings-nav-item" data-settings="billing"><svg class="ic sm"><use href="#ic-card"/></svg> Facturation</button>
+          <button class="settings-nav-item" data-settings="usage"><svg class="ic sm"><use href="#ic-sliders"/></svg> Utilisation</button>
+          <button class="settings-nav-item" data-settings="capabilities"><svg class="ic sm"><use href="#ic-sparkle"/></svg> Capacités</button>
+          <button class="settings-nav-item" data-settings="code"><svg class="ic sm"><use href="#ic-code"/></svg> SoloIA Code</button>
+          <div class="settings-nav-group">Application bureau</div>
+          <button class="settings-nav-item" data-settings="desktop"><svg class="ic sm"><use href="#ic-grid"/></svg> Général</button>
+          <div class="settings-nav-group">Personnaliser</div>
+          <button class="settings-nav-item" data-settings="skills"><svg class="ic sm"><use href="#ic-puzzle"/></svg> Compétences</button>
+          <button class="settings-nav-item" data-settings="connectors"><svg class="ic sm"><use href="#ic-plug"/></svg> Connecteurs</button>
+          <button class="settings-nav-item" data-settings="plugins"><svg class="ic sm"><use href="#ic-puzzle"/></svg> Plugins</button>
+        </nav>
+        <div class="settings-body" id="settingsBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="searchModal">
+    <div class="modal search-modal">
+      <button class="modal-x" data-close><svg class="ic"><use href="#ic-x"/></svg></button>
+      <div class="search-input-row">
+        <svg class="ic"><use href="#ic-search"/></svg>
+        <input type="text" id="searchInput" placeholder="Rechercher une discussion ou une question de code…" autocomplete="off">
+      </div>
+      <div class="search-results" id="searchResults">
+        <div class="hint" style="padding:16px">Tape au moins 2 caractères…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="previewModal">
+    <div class="modal preview-modal">
+      <div class="preview-head">
+        <span id="previewTitle">Aperçu</span>
+        <button class="modal-x" data-close><svg class="ic"><use href="#ic-x"/></svg></button>
+      </div>
+      <iframe id="previewFrame" class="preview-frame" sandbox="allow-scripts allow-modals" title="Aperçu du code"></iframe>
+    </div>
+  </div>
+
+  <!-- Firebase (compat, CDN — nécessite internet) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
+
+  <script src="assets/config.js"></script>
+  <script src="assets/knowledge.js"></script>
+  <script src="assets/engine.js"></script>
+  <script src="assets/firebase.js"></script>
+  <script src="assets/ollama.js"></script>
+  <script src="assets/websearch.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
